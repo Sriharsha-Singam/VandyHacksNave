@@ -32,7 +32,32 @@ $( document ).ready(function() {
             addMarkers();
     });
     
-    //START CANVASJS CODE
+    window.onload = function () {
+
+var chart = new CanvasJS.Chart("chartContainer", {
+	animationEnabled: true,
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	title:{
+		text: "Most Likely Purchased Items"
+	},
+	axisY: {
+		title: "% probability of Purchase"
+	},
+	data: [{        
+		type: "column",  
+
+		dataPoints: [      
+			{ y: 300878, label: "Venezuela" },
+			{ y: 266455,  label: "Saudi" },
+			{ y: 169709,  label: "Canada" },
+			{ y: 158400,  label: "Iran" },
+			{ y: 142503,  label: "Iraq" },
+		]
+	}]
+});
+chart.render();
+
+}
     
 });
 var map;
