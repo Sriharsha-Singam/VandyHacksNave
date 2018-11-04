@@ -30,6 +30,11 @@ $( document ).ready(function() {
    	    day = dateVal.slice(3,5);
         apiString = "s=" + currentStateVal + "&m=" + month + "&d=" + day;
         console.log(apiString);
+        if(dateVal != null && currentStateVal != 0){
+            $.getJSON("127.0.0.1:5000/predict?"+apiString, function(json) {
+                console.log(json);
+            });
+        }
     })
     $('.dropdown-menu a').on('click', function(){  
         currentStateVal = $(this).data("value");
