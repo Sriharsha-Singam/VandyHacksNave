@@ -64,7 +64,8 @@ $( document ).ready(function() {
             ]
         }]
     });
-    chart.render();    
+    chart.render(); 
+    
 });
 
 function addMarkers(){

@@ -20,26 +20,46 @@
   <link rel="stylesheet" type="text/css" src="index.css">
   <link rel="stylesheet" type="text/scss" href="@material/list/mdc-list"> 
   <script type="text/javascript" src="index.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
 <!--      <script type="text/javascript" src="file:///Users/INT_ACC/Desktop/Test/VandyHacksNaveTeam/public/index.js"></script>-->
 
   <style>
       #map {
-        height: 400px;  /* The height is 400 pixels */
+        height: 500px;  /* The height is 400 pixels */
         width: 100%;  /* The width is the width of the web page */
+        border-radius: 25px;
+        border-left: -10px;
+        padding-right: 40px;
+        padding-bottom: 100px;
        }
       html, body {
         height: 100%;
         margin: 0;
         padding: 0;
+        background-color: #90caf9;
+          font-family: 'Ubuntu', sans-serif;
+
+      }
+      h5{
+          font-weight: 10px;
+      }
+      .end{
+          font-family: 'Ubuntu', sans-serif;
+          padding-bottom: 80px;
+
       }
   </style>
 </head>
 <body>
     <br>
-    <div class="row" style="height: 650px;">
+    <div class="row" style="height: 100%; padding-top: 40px;">
         <div class="col-1">
         </div>
-        <div class="col-3">
+        <div class="col-3" style="position: fixed;">
+            <h1>TSCANALYTICS</h1>
+            <h5>View a predictive model for future sales based on current and past seasonal and weather based sales.</h5>
+            <h5>Get a better picture of the spread of stores in the USA.</h5>
+            <h5 class="end">Find out what products to increase in orders for which region and when!</h5>
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Pick a State
@@ -68,7 +88,7 @@
               </div>
             </div>
         </div>
-        <div class="col-7">
+        <div class="col-7" style="overflow:auto; overflow-y: scroll; height: 1000px; ">
             <div id="map"></div>
                 <script>
                     var map;
@@ -77,21 +97,25 @@
                             center: {lat: 39.83333333, lng: -98.58333333},
                             zoom: 4
                         });
-                        var place = {lat: 39.83333333, lng: -98.58333333};
-                        var marker = new google.maps.Marker({position: place, map: map});
                     }
                 </script>
                 <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
                 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTAMykaE0wy609KKN5ziAzgBecZnXHhcQ&callback=initMap"
                 async defer></script>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+            <br>
+            <br>
+             <div id="chartContainer" style="height: 300px; width: 100%; border-top: 250px;"></div>
             <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
         </div>
     </div>
+<!--
+    <div class="row" style="width: 100%;">
+        <div class="col-4"></div>
+        <div class="col-6">
+            
+        </div>
+    </div>
+-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </body>
