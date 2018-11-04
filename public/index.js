@@ -1,13 +1,3 @@
-//var map;
-//function initMap() {
-//    map = new google.maps.Map(document.getElementById('map'), {
-//        center: {lat: 39.83333333, lng: -98.58333333},
-//        zoom: 5
-//    });
-//    var place = {lat: 39.83333333, lng: -98.58333333};
-//    var marker = new google.maps.Marker({position: place, map: map});
-//}
-
 var currentStateVal = 0;
 var dateVal = 0;
 var apiString = 0;
@@ -22,63 +12,61 @@ var states = [];
 var map;
 var jsonVal = null;
 $( document ).ready(function() {
-    console.log( "ready!" );
     $('.calendar').datepicker();
     $('button').click(function(event) {
         dateVal = $('#calendar').val(); 
         month = dateVal.slice(0,2);
    	    day = dateVal.slice(3,5);
-        apiString = "s=" + currentStateVal + "&m=" + month + "&d=" + day;
-        console.log(apiString);
-        if(dateVal != null && currentStateVal != 0){
-            jsonVal = JSON.parse(gettingHttp("https://localhost:5000/predict?"+apiString));
-            console.log("JSON VAL: "+jsonVal);
-            outputChart();
+        apiString = "s=" + statesInUS[currentStateVal] + "&m=" + month + "&d=" + day;
+        if(dateVal != 0 && currentStateVal != 0){
+			var url = "http://localhost:5000/predict?" + apiString;
+			var jsonVal = JSON.parse(gettingHttp(url));
+			console.log(jsonVal)
+			outputChart(jsonVal)
+			console.log("Chart updated.");
         }
     })
     $('.dropdown-menu a').on('click', function(){  
         currentStateVal = $(this).data("value");
         $('.dropdown-toggle').html($(this).html());
         var index = getAllIndexes(statesList, currentStateVal);
-        currentStateVal = statesInUS[currentStateVal];
         map.setCenter(new google.maps.LatLng(parseFloat(statesLat[index[0]]),parseFloat(statesLong[index[0]])) );
         map.setZoom(7);
     })
-    $.getJSON("StoreLocatore.json", function(json) {
-            console.log(json.length);
-            jsonStoreLocations = json;
-            addMarkers();
+    $.getJSON("StoreLocator.json", function(json) {
+        jsonStoreLocations = json;
+        addMarkers();
     });
 });
-function outputChart(){
-    var chart = new CanvasJS.Chart("chartContainer", {
-        animationEnabled: true,
-        theme: "light2", // "light1", "light2", "dark1", "dark2"
-        title:{
-            text: "Most Likely Purchased Items"
-        },
-        axisY: {
-            title: "% probability of Purchase"
-        },
-        data: [{        
-            type: "column",  
-            dataPoints: [      
-                { y: jsonVal.probs[0], label: jsonVal.topbuys[0] },
-                { y: jsonVal.probs[1],  label: jsonVal.topbuys[1] },
-                { y: jsonVal.probs[2],  label: jsonVal.topbuys[2] },
-                { y: jsonVal.probs[3],  label: jsonVal.topbuys[3] },
-                { y: jsonVal.probs[4],  label: jsonVal.topbuys[4] },
-            ]
-        }]
-    });
-    chart.render(); 
+
+function outputChart(jsonVal){
+	var chart = new CanvasJS.Chart("chartContainer", {
+		animationEnabled: true,
+		theme: "dark1", // "light1", "light2", "dark1", "dark2"
+		title:{
+			text: "Predicted Relative Frequency of Purchase"
+		},
+		axisY: {
+			title: "Probability of Purchase (%)"
+		},
+		data: [{        
+			type: "column",  
+			dataPoints: [      
+				{ y: 100 * jsonVal.probs[0], label: jsonVal.topbuys[0] },
+				{ y: 100 * jsonVal.probs[1],  label: jsonVal.topbuys[1] },
+				{ y: 100 * jsonVal.probs[2],  label: jsonVal.topbuys[2] },
+				{ y: 100 * jsonVal.probs[3],  label: jsonVal.topbuys[3] },
+				{ y: 100 * jsonVal.probs[4],  label: jsonVal.topbuys[4] },
+			]
+		}]
+	});
+	chart.render(); 
 }
+
 function addMarkers(){
     for(var i = 0; i < jsonStoreLocations.length; i++){
         var index = getAllIndexes(statesInUS, jsonStoreLocations[i].state);
         states.push(index[0]);
-        if(i == 1)
-            console.log(index[0]);
     }
     for(var j = 0; j < statesInUS.length; j++){
             var indices = getAllIndexes(states, j);
@@ -97,6 +85,7 @@ function addMarkers(){
             var markerCluster = new MarkerClusterer(map, markers,{imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
     }    
 }
+
 function getAllIndexes(arr, val) {
     var indexes = [], i;
     for(i = 0; i < arr.length; i++)
@@ -104,8 +93,8 @@ function getAllIndexes(arr, val) {
             indexes.push(i);
     return indexes;
 }
-function gettingHttp(url)
-{
+
+function gettingHttp(url) {
   var xml = new XMLHttpRequest();
   xml.open( "GET", url, false );
   xml.send(null);
