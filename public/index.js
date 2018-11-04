@@ -18,9 +18,9 @@ var jsonStoreLocations;
 var statesLat = [41, 39 , 42 , 39, 47, 43, 40, 41, 42, 45];
 var statesLong = [-73, -104, -71, -76, -95, -71, -74, -77, -71, -73];
 var statesList = [6, 7, 18, 19, 21, 28, 29, 37, 38, 44];
-//var marker = []
 var states = [];
 var map;
+var jsonVal = null;
 $( document ).ready(function() {
     console.log( "ready!" );
     $('.calendar').datepicker();
@@ -30,18 +30,17 @@ $( document ).ready(function() {
    	    day = dateVal.slice(3,5);
         apiString = "s=" + currentStateVal + "&m=" + month + "&d=" + day;
         console.log(apiString);
-        val jsonVal = JSON.parse(gettingHttp("127.0.0.1:5000/predict?"+apiString));
-        console("JSON VAL: "+jsonVal);
-//        if(dateVal != null && currentStateVal != 0){
-//            $.getJSON("127.0.0.1:5000/predict?"+apiString, function(json) {
-//                console.log(json);
-//            });
-//        }
+        if(dateVal != null && currentStateVal != 0){
+            jsonVal = JSON.parse(gettingHttp("https://localhost:5000/predict?"+apiString));
+            console.log("JSON VAL: "+jsonVal);
+            outputChart();
+        }
     })
     $('.dropdown-menu a').on('click', function(){  
         currentStateVal = $(this).data("value");
         $('.dropdown-toggle').html($(this).html());
         var index = getAllIndexes(statesList, currentStateVal);
+        currentStateVal = statesInUS[currentStateVal];
         map.setCenter(new google.maps.LatLng(parseFloat(statesLat[index[0]]),parseFloat(statesLong[index[0]])) );
         map.setZoom(7);
     })
@@ -50,6 +49,8 @@ $( document ).ready(function() {
             jsonStoreLocations = json;
             addMarkers();
     });
+});
+function outputChart(){
     var chart = new CanvasJS.Chart("chartContainer", {
         animationEnabled: true,
         theme: "light2", // "light1", "light2", "dark1", "dark2"
@@ -61,20 +62,17 @@ $( document ).ready(function() {
         },
         data: [{        
             type: "column",  
-
             dataPoints: [      
-                { y: 300878, label: "Venezuela" },
-                { y: 266455,  label: "Saudi" },
-                { y: 169709,  label: "Canada" },
-                { y: 158400,  label: "Iran" },
-                { y: 142503,  label: "Iraq" },
+                { y: jsonVal.probs[0], label: jsonVal.topbuys[0] },
+                { y: jsonVal.probs[1],  label: jsonVal.topbuys[1] },
+                { y: jsonVal.probs[2],  label: jsonVal.topbuys[2] },
+                { y: jsonVal.probs[3],  label: jsonVal.topbuys[3] },
+                { y: jsonVal.probs[4],  label: jsonVal.topbuys[4] },
             ]
         }]
     });
     chart.render(); 
-    
-});
-
+}
 function addMarkers(){
     for(var i = 0; i < jsonStoreLocations.length; i++){
         var index = getAllIndexes(statesInUS, jsonStoreLocations[i].state);
