@@ -30,11 +30,13 @@ $( document ).ready(function() {
    	    day = dateVal.slice(3,5);
         apiString = "s=" + currentStateVal + "&m=" + month + "&d=" + day;
         console.log(apiString);
-        if(dateVal != null && currentStateVal != 0){
-            $.getJSON("127.0.0.1:5000/predict?"+apiString, function(json) {
-                console.log(json);
-            });
-        }
+        val jsonVal = JSON.parse(gettingHttp("127.0.0.1:5000/predict?"+apiString));
+        console("JSON VAL: "+jsonVal);
+//        if(dateVal != null && currentStateVal != 0){
+//            $.getJSON("127.0.0.1:5000/predict?"+apiString, function(json) {
+//                console.log(json);
+//            });
+//        }
     })
     $('.dropdown-menu a').on('click', function(){  
         currentStateVal = $(this).data("value");
@@ -103,4 +105,11 @@ function getAllIndexes(arr, val) {
         if (arr[i] === val)
             indexes.push(i);
     return indexes;
+}
+function gettingHttp(url)
+{
+  var xml = new XMLHttpRequest();
+  xml.open( "GET", url, false );
+  xml.send(null);
+  return xml.responseText;
 }
